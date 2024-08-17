@@ -23,3 +23,21 @@ CORONA_BOX is a GitHub Action that automatically updates a Gist with the latest 
    git clone https://github.com/your-username/corona_box.git
    cd corona_box
    ```
+
+2. **Install**
+
+   ```bash
+   npm install
+   ```
+
+3. Create a `.env` file
+
+   ```bash
+   GIST_ID=your_gist_id
+   GH_PAT=your_github_personal_access_token
+   COUNTRY=your_country_code  # Optional: Leave empty for global stats
+   ```
+
+- GIST_ID: The ID of the Gist you want to update.
+- GH_PAT: Your GitHub Personal Access Token with gist scope.
+- COUNTRY: (Optional) ISO 3166-1 alpha-2 country code (e.g., US for the United States). Leave blank for global statistics.
