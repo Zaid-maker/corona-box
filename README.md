@@ -1,35 +1,25 @@
-<p align="center">
-  <img width="400" src="https://user-images.githubusercontent.com/17516174/80812104-92733d00-8bc7-11ea-8017-1ed35aa64d4b.png">
-  <h1 align="center">COVID-Box</h1>
-  <p align="center">🦠 Update a gist to contain global or per country coronavirus stats</p>
-  <p align="center"><strong>covid-box</strong> is a GitHub Action that is designed to work using the <a href="https://developer.github.com/actions/managing-workflows/creating-and-cancelling-a-workflow/#scheduling-a-workflow"><code>schedule</code></a> event.</p>
-</p>
+# CORONA_BOX 🦠
 
-<p align="center"><a href="https://github.com/puf17640/covid-box"><img alt="GitHub Actions status" src="https://github.com/puf17640/covid-box/workflows/Node%20CI/badge.svg"></a></p>
-<br>
+CORONA_BOX is a GitHub Action that automatically updates a Gist with the latest COVID-19 statistics, either globally or for a specific country. This project uses Node.js and several APIs to gather and display real-time data in a formatted manner.
+
+## Features
+
+- 🌍 Supports global and country-specific COVID-19 statistics.
+- 📈 Displays key statistics such as active cases, recoveries, deaths, tests, and more.
+- 🕒 Automatically updates at specified intervals.
+- 🎨 Easy customization of displayed data and formatting.
+
+## Prerequisites
+
+- **Node.js**: Ensure you have Node.js installed (LTS version recommended).
+- **GitHub Personal Access Token (PAT)**: Required to update your Gist.
+- **Gist ID**: The ID of the Gist you want to update with the COVID-19 statistics.
 
 ## Setup
 
+1. **Clone the Repository:**
 
-### Prep work
-
-1. Create a new public GitHub Gist (https://gist.github.com/)
-2. Create a personal access token with the `gist` scope and copy it. (https://github.com/settings/tokens/new)
-
-### Project setup
-
-1. Fork this repository
-2. Go to the repo **Settings > Secrets**
-3. Add the following environment variables:
-   - **GH_PAT:** The personal access token generated above.
-   - **GIST_ID:** The ID portion from your gist url: `https://gist.github.com/puf17640/`**`f091f6edaca9b14d5a149983526feb63`**.
-   - **COUNTRY:** Specify a country name to show country specific data, if omitted, Global data is shown.
-4. Wait for it to update! 🎉
-
-## Credits
-
-This project uses the [covidapi](https://npmjs.com/covidapi) npm package to get all the data from [NovelCOVID API](https://disease.sh)
-
----
-
-_Inspired by [JasonEtco/activity-box](https://github.com/JasonEtco/activity-box)_
+   ```bash
+   git clone https://github.com/your-username/corona_box.git
+   cd corona_box
+   ```
