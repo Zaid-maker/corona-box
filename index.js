@@ -2,7 +2,7 @@ require("dotenv").config();
 import { Octokit } from "@octokit/rest";
 import axios from "axios";
 import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
+import relativeTime from "dayjs/plugin/relativeTime.js";
 import emoji from "node-emoji";
 
 // Extend dayjs with the relativeTime plugin
