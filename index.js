@@ -4,7 +4,7 @@ const api = require('covidapi'),
 	moment = require('moment'),
 	emoji = require('node-emoji'),
 	{ Toolkit } = require('actions-toolkit'),
-	{ GistBox, MAX_LENGTH } = require('gist-box')
+	{ GistBox } = require('gist-box')
 
 const gutter = (rows) => rows.map(row => {
 	row[1] = ' '.repeat(5) + row[1]
