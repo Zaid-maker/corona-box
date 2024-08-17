@@ -1,9 +1,9 @@
 require("dotenv").config();
-const axios = require("axios");
-const table = require("text-table");
-const dayjs = require("dayjs");
-const emoji = require("node-emoji");
-const { Octokit } = require("@octokit/rest");
+import { Octokit } from "@octokit/rest";
+import axios from "axios";
+import dayjs from "dayjs";
+import emoji from "node-emoji";
+import table from "text-table";
 
 const gutter = (rows) =>
   rows.map((row) => {
