@@ -1,5 +1,5 @@
 {
-  "name": "covid-box",
+  "name": "corona-box",
   "version": "0.0.1",
   "description": "🦠 Update a gist to contain global or per country coronavirus stats",
   "main": "index.js",
