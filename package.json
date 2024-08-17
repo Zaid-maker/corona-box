@@ -24,7 +24,7 @@
   "homepage": "https://github.com/puf17640/covid-box#readme",
   "dependencies": {
     "@octokit/rest": "^21.0.2",
-    "actions-toolkit": "^2.2.0",
+    "actions-toolkit": "^6.0.0",
     "axios": "^1.7.4",
     "covidapi": "0.3.0",
     "dayjs": "^1.11.12",
