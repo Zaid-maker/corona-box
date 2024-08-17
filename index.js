@@ -1,43 +1,64 @@
-require('dotenv').config()
-const api = require('covidapi'),
-	table = require('text-table'),
-	moment = require('moment'),
-	emoji = require('node-emoji'),
-	{ Toolkit } = require('actions-toolkit'),
-	{ GistBox } = require('gist-box')
+require("dotenv").config();
+const axios = require("axios");
+const table = require("text-table");
+const dayjs = require("dayjs");
+const emoji = require("node-emoji");
+const { Octokit } = require("@octokit/rest");
 
-const gutter = (rows) => rows.map(row => {
-	row[1] = ' '.repeat(5) + row[1]
-	return row
-})
+const gutter = (rows) =>
+  rows.map((row) => {
+    row[1] = " ".repeat(5) + row[1];
+    return row;
+  });
 
-Toolkit.run(async tools => {
-	const { GIST_ID, GH_PAT, COUNTRY } = process.env
+(async () => {
+  const { GIST_ID, GH_PAT, COUNTRY } = process.env;
 
-	// Get the user's public events
-	tools.log.debug(`Getting COVID stats for ${COUNTRY || 'Global'}`)
-	const data = COUNTRY ? await api.countries({ country: COUNTRY }) : await api.all()
-	tools.log.debug(`Successfully fetched ${data.country || 'Global'} data from the API.`)
+  try {
+    // Fetch COVID-19 stats
+    console.log(`Getting COVID stats for ${COUNTRY || "Global"}`);
+    const apiUrl = COUNTRY
+      ? `https://disease.sh/v3/covid-19/countries/${COUNTRY}`
+      : "https://disease.sh/v3/covid-19/all";
+    const response = await axios.get(apiUrl);
+    const data = response.data;
+    console.log(
+      `Successfully fetched ${data.country || "Global"} data from the API.`
+    );
 
-	const content = table(gutter([
-		[data.country ? `${emoji.get(`flag-${data.countryInfo.iso2.toLowerCase()}`)}${data.country}` : '🌍 Global', moment(data.updated).fromNow()],
-		['🤒Active:', `${data.active}`.replace(/(.)(?=(\d{3})+$)/g, '$1,')],
-		['😌Recovered:', `${data.recovered}`.replace(/(.)(?=(\d{3})+$)/g, '$1,')],
-		['💀Deaths:', `${data.deaths}`.replace(/(.)(?=(\d{3})+$)/g, '$1,')],
-		['💉Tests:', `${data.tests}`.replace(/(.)(?=(\d{3})+$)/g, '$1,')]
-	]), { align: ['l', 'r'], stringLength: (str) => data.country && str.includes('ago') ? str.length - 2 : str.length })
+    // Prepare content for Gist
+    const content = table(
+      gutter([
+        [
+          data.country
+            ? `${emoji.get(`flag-${data.countryInfo.iso2.toLowerCase()}`)} ${
+                data.country
+              }`
+            : "🌍 Global",
+          dayjs(data.updated).fromNow(),
+        ],
+        ["🤒 Active:", `${data.active.toLocaleString()}`],
+        ["😌 Recovered:", `${data.recovered.toLocaleString()}`],
+        ["💀 Deaths:", `${data.deaths.toLocaleString()}`],
+        ["💉 Tests:", `${data.tests.toLocaleString()}`],
+      ]),
+      { align: ["l", "r"] }
+    );
 
-	const box = new GistBox({ id: GIST_ID, token: GH_PAT })
-	try {
-		tools.log.debug(`Updating Gist ${GIST_ID}`)
-		await box.update({ content })
-		tools.exit.success(`Successfully updated Gist ${GIST_ID}!`)
-	} catch (err) {
-		tools.log.debug(`Error retrieving or updating the Gist ${GIST_ID}`)
-		tools.exit.failure(err)
-	}
-},
-{
-	event: 'schedule',
-	secrets: ['GITHUB_TOKEN', 'GH_PAT', 'COUNTRY', 'GIST_ID']
-})
+    // Update Gist
+    const octokit = new Octokit({ auth: GH_PAT });
+    await octokit.gists.update({
+      gist_id: GIST_ID,
+      files: {
+        "COVID-19 Stats.md": {
+          content: content,
+        },
+      },
+    });
+
+    console.log(`Successfully updated Gist ${GIST_ID}!`);
+  } catch (error) {
+    console.error(`Failed to update Gist: ${error.message}`);
+    process.exit(1);
+  }
+})();
