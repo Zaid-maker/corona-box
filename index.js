@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import axios from "axios";
 import table from "text-table";
 import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
+import relativeTime from "dayjs/plugin/relativeTime.js";
 import emoji from "node-emoji";
 import { Octokit } from "@octokit/rest";
 
