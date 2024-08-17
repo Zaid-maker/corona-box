@@ -1,9 +1,16 @@
-require("dotenv").config();
-import { Octokit } from "@octokit/rest";
+import dotenv from "dotenv";
 import axios from "axios";
-import dayjs from "dayjs";
-import emoji from "node-emoji";
 import table from "text-table";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import emoji from "node-emoji";
+import { Octokit } from "@octokit/rest";
+
+// Load environment variables from .env file
+dotenv.config();
+
+// Extend dayjs with the relativeTime plugin
+dayjs.extend(relativeTime);
 
 const gutter = (rows) =>
   rows.map((row) => {
