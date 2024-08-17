@@ -1,22 +1,12 @@
-import dotenv from "dotenv";
-import axios from "axios";
-import table from "text-table";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime.js";
-import emoji from "node-emoji";
+require("dotenv").config();
 import { Octokit } from "@octokit/rest";
-
-// Load environment variables from .env file
-dotenv.config();
+import axios from "axios";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import emoji from "node-emoji";
 
 // Extend dayjs with the relativeTime plugin
 dayjs.extend(relativeTime);
-
-const gutter = (rows) =>
-  rows.map((row) => {
-    row[1] = " ".repeat(5) + row[1];
-    return row;
-  });
 
 (async () => {
   const { GIST_ID, GH_PAT, COUNTRY } = process.env;
@@ -33,24 +23,20 @@ const gutter = (rows) =>
       `Successfully fetched ${data.country || "Global"} data from the API.`
     );
 
-    // Prepare content for Gist
-    const content = table(
-      gutter([
-        [
-          data.country
-            ? `${emoji.get(`flag-${data.countryInfo.iso2.toLowerCase()}`)} ${
-                data.country
-              }`
-            : "🌍 Global",
-          dayjs(data.updated).fromNow(),
-        ],
-        ["🤒 Active:", `${data.active.toLocaleString()}`],
-        ["😌 Recovered:", `${data.recovered.toLocaleString()}`],
-        ["💀 Deaths:", `${data.deaths.toLocaleString()}`],
-        ["💉 Tests:", `${data.tests.toLocaleString()}`],
-      ]),
-      { align: ["l", "r"] }
-    );
+    // Manually format content for Gist
+    const content = [
+      `${
+        data.country
+          ? `${emoji.get(`flag-${data.countryInfo.iso2.toLowerCase()}`)} ${
+              data.country
+            }`
+          : "🌍 Global"
+      } ${dayjs(data.updated).fromNow()}`,
+      `🤒 Active: ${data.active.toLocaleString()}`,
+      `😌 Recovered: ${data.recovered.toLocaleString()}`,
+      `💀 Deaths: ${data.deaths.toLocaleString()}`,
+      `💉 Tests: ${data.tests.toLocaleString()}`,
+    ].join("\n");
 
     // Update Gist
     const octokit = new Octokit({ auth: GH_PAT });
