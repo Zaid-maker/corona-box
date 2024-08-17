@@ -31,7 +31,7 @@
     "node-emoji": "^1.10.0"
   },
   "devDependencies": {
-    "@types/node-emoji": "^2.1.0"
+    "@types/node-emoji": "^1.8.2"
   },
   "husky": {
     "hooks": {
