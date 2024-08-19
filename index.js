@@ -1,14 +1,19 @@
-import dotenv from "dotenv";
+import "dotenv/config";
 import { Octokit } from "@octokit/rest";
 import axios from "axios";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime.js";
 import emoji from "node-emoji";
 
-dotenv.config();
-
 // Extend dayjs with the relativeTime plugin
 dayjs.extend(relativeTime);
+
+const gutter = (rows) =>
+  rows.map((row) => {
+    row[0] = row[0].padEnd(20, " "); // Adjust padding for alignment
+    row[1] = " ".repeat(5) + row[1];
+    return row;
+  });
 
 (async () => {
   const { GIST_ID, GH_PAT, COUNTRY } = process.env;
@@ -25,20 +30,39 @@ dayjs.extend(relativeTime);
       `Successfully fetched ${data.country || "Global"} data from the API.`
     );
 
-    // Manually format content for Gist
-    const content = [
-      `${
-        data.country
-          ? `${emoji.get(`flag-${data.countryInfo.iso2.toLowerCase()}`)} ${
-              data.country
-            }`
-          : "🌍 Global"
-      } ${dayjs(data.updated).fromNow()}`,
-      `🤒 Active: ${data.active.toLocaleString()}`,
-      `😌 Recovered: ${data.recovered.toLocaleString()}`,
-      `💀 Deaths: ${data.deaths.toLocaleString()}`,
-      `💉 Tests: ${data.tests.toLocaleString()}`,
-    ].join("\n");
+    // Prepare the rows for the table
+    let rows = [
+      [
+        `${
+          data.country
+            ? `${emoji.get(`flag-${data.countryInfo.iso2.toLowerCase()}`)} ${
+                data.country
+              }`
+            : "🌍 Global"
+        }`,
+        dayjs(data.updated).fromNow(),
+      ],
+      ["🤒 Active:", `${data.active.toLocaleString()}`],
+      ["😌 Recovered:", `${data.recovered.toLocaleString()}`],
+      ["💀 Deaths:", `${data.deaths.toLocaleString()}`],
+      ["💉 Tests:", `${data.tests.toLocaleString()}`],
+      ["📈 Today's Cases:", `${data.todayCases.toLocaleString()}`],
+      ["📉 Today's Deaths:", `${data.todayDeaths.toLocaleString()}`],
+      ["🔄 Today's Recovered:", `${data.todayRecovered.toLocaleString()}`],
+      ["⚠️ Critical Cases:", `${data.critical.toLocaleString()}`],
+      ["📊 Cases Per Million:", `${data.casesPerOneMillion.toLocaleString()}`],
+      [
+        "📊 Deaths Per Million:",
+        `${data.deathsPerOneMillion.toLocaleString()}`,
+      ],
+      ["👥 Population:", `${data.population.toLocaleString()}`],
+    ];
+
+    // Optional: Sort rows by a specific column (e.g., by label name alphabetically)
+    // rows.sort((a, b) => a[0].localeCompare(b[0]));
+
+    // Format the content using text-table with alignment
+    const content = table(gutter(rows), { align: ["l", "r"] });
 
     // Update Gist
     const octokit = new Octokit({ auth: GH_PAT });
