@@ -70,7 +70,7 @@ const gutter = (rows) =>
     await octokit.gists.update({
       gist_id: GIST_ID,
       files: {
-        "COVID-19 Stats.md": {
+        "COVID-19 Stats.txt": {
           content: content,
         },
       },
